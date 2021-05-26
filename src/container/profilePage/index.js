@@ -10,6 +10,7 @@ import Layout from '../../component/layout';
 const Profilepage = (props) => {
   return(
         <Layout>
+            {/* Start Your HtmlFile from Here and all the html element Should Be In Layout Tag.*/}
             <label>This IS Profile Page</label>
         </Layout>
     )
