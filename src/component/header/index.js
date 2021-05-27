@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './style.css';
 import {Navbar, Nav} from 'react-bootstrap';
 import {NavLink} from 'react-router-dom';
@@ -9,7 +9,7 @@ import {NavLink} from 'react-router-dom';
 * @function Header
 **/
 
-const Header = (props) => {
+const Header = (props,isAuth) => {
     return (
         <div className="header">
             <Navbar className="navbar-bg" collapseOnSelect expand="md" variant="dark">
@@ -26,9 +26,13 @@ const Header = (props) => {
                         <li className="nav-item">
                             <NavLink to="profile" activeClassName="activeLink" className="nav-link link2 navtags" >profile</NavLink>
                         </li>
-                        <li className="nav-item">
+
+                        {!isAuth?( <li className="nav-item">
                             <NavLink to="login" activeClassName="activeLink" className="nav-link navtags" >login</NavLink>
-                        </li>
+                        </li>):(<></>)}
+                       
+
+
                         <li className="nav-item">
                             <NavLink to="register" activeClassName="activeLink" className="nav-link navtags">register</NavLink>
                         </li>

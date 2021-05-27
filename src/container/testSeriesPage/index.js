@@ -1,6 +1,7 @@
 import React from 'react';
 import './style.css';
 import Layout from '../../component/layout';
+import {withRouter} from 'react-router-dom';
 
 /**
 * @author
@@ -17,4 +18,4 @@ const TestseriesPage = (props) => {
 
  }
 
-export default TestseriesPage
+export default withRouter(TestseriesPage);
