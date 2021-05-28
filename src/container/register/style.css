@@ -1,0 +1,23 @@
+.main_register_component{
+    width: 70vw;
+    height: 70vh;
+    background-color: #ffffff;
+    border: 1px solid #6b6b6b1f;
+    border-radius: 10px;
+    padding: 5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.register_btn{
+    height: 2.5rem;
+    margin-top: 2rem;
+    padding: 0 3rem;
+    border: none;
+    color: #f5f5f5;
+    border-radius: 2px;
+    background-color: #112874;
+    box-shadow: 0 0 5px #11287448;
+}
