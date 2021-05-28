@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import './style.css';
-import {NavLink} from 'react-router-dom';
-import {FiChevronLeft} from 'react-icons/fi';
-import {FaTelegramPlane, FaTwitter, FaInstagram, FaFacebookF} from 'react-icons/fa';
+import { NavLink, Redirect } from 'react-router-dom';
+import { FiChevronLeft } from 'react-icons/fi';
+import { FaTelegramPlane, FaTwitter, FaInstagram, FaFacebookF } from 'react-icons/fa';
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 import { Col, Container, Row } from 'react-bootstrap';
+
+import { LoginAction } from '../../redux/actions/authAction';
+import { useDispatch, useSelector } from 'react-redux';
 
 
 /**
@@ -13,8 +16,27 @@ import { Col, Container, Row } from 'react-bootstrap';
 **/
 
 const LoginPage = (props) => {
-    const [userEmail, setUserEmail] = useState();
-    const [userPassword, setUserPassword] = useState();
+
+    const dispatch = useDispatch();
+    const auth = useSelector(state => state.auth);
+
+    const [userEmail, setUserEmail] = useState('');
+    const [userPassword, setUserPassword] = useState('');
+
+    if(auth.authenticate){
+        return <Redirect to={'/'}/>
+    }
+
+    const loginUser = (e) => {
+        e.preventDefault();
+
+        const loginUserDetail = {
+            userEmail,
+            userPassword
+        }
+        
+        dispatch(LoginAction(loginUserDetail));
+    }
 
     return(
         <div className="login_div">
@@ -24,10 +46,11 @@ const LoginPage = (props) => {
             <div className="body_div_in_login">
                 <div className="main_login_component">
                 <label className="login_lbl">Login</label>
-                <Container>
-                    <Row style={{}}>
+
+                    <Container>
+                      <Row style={{}}>
                         <Col md={{ span: 12, offset: 0 }}>
-                        <ValidatorForm useref="form">
+                        <ValidatorForm useref="form" onSubmit={loginUser}>
                         <TextValidator
                             className="input-field"
                             placeholder="Enter Email"
@@ -49,7 +72,7 @@ const LoginPage = (props) => {
                             className="input-field"
                             placeholder="Enter Password"
                             value={userPassword}
-                            type="text"
+                            type="password"
                             variant="outlined"
                             validators={["required", "minStringLength:8"]}
                             errorMessages={[
@@ -66,8 +89,9 @@ const LoginPage = (props) => {
                             <button type="submit" className="login_btn">Login</button>
                         </ValidatorForm>
                         </Col>
-                    </Row>
-                </Container>                    
+                      </Row>
+                    </Container>     
+
                 </div>
             </div>
             <div className="signup_link_div">

@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './style.css';
-import {NavLink} from 'react-router-dom';
+import {NavLink, Redirect} from 'react-router-dom';
 import {FiChevronLeft} from 'react-icons/fi';
 import {FaTelegramPlane, FaTwitter, FaInstagram, FaFacebookF} from 'react-icons/fa';
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 import { Col, Container, Row, Form } from 'react-bootstrap';
+import { useDispatch, useSelector } from 'react-redux';
+// import Loader from 'react-loader-spinner'
+
+import {RegisterAction} from '../../redux/actions/authAction';
 
 /**
 * @author
@@ -12,12 +16,16 @@ import { Col, Container, Row, Form } from 'react-bootstrap';
 **/
 
 const Registerpage = (props) => {
-  const [userEmail, setUserEmail] = useState();
-  const [userFullName, setUserFullName] = useState();
-  const [userPhone, setUserPhone] = useState();
-  const [userBranch, setUserBranch] = useState();
-  const [userCollege, setUserCollege] = useState();
-  const [userPassword, setUserPassword] = useState();
+  
+  const dispatch = useDispatch();
+  const auth = useSelector(state => state.auth);
+
+  const [userEmail, setUserEmail] = useState('');
+  const [userFullName, setUserFullName] = useState('');
+  const [userPhone, setUserPhone] = useState('');
+  const [userBranch, setUserBranch] = useState('');
+  const [userCollege, setUserCollege] = useState('');
+  const [userPassword, setUserPassword] = useState('');
 
   const Course = [
     'Select Your Branch',
@@ -28,7 +36,7 @@ const Registerpage = (props) => {
     'Electrical Engineering'
 ]
 
-const Colleges = [
+  const Colleges = [
     'Select Your Institution',
     'Computer Science & Engineering', 
     'Instrumentation Engineering', 
@@ -36,6 +44,24 @@ const Colleges = [
     'Civil Engineering',
     'Electrical Engineering'
 ]
+
+    if(auth.authenticate){
+        return <Redirect to={'/'} />
+    }
+
+
+  const registerUser = (e) => {
+      e.preventDefault();
+      const registerUserDetails = {
+          userEmail,
+          userFullName,
+          userPhone,
+          userBranch,
+          userCollege,
+          userPassword
+      }
+      dispatch(RegisterAction(registerUserDetails));
+  }
 
   return(
     <div className="login_div">
@@ -49,7 +75,7 @@ const Colleges = [
                 <Container>
                     <Row style={{}}>
                         <Col md={{ span: 12, offset: 0 }}>
-                        <ValidatorForm useref="form">
+                        <ValidatorForm useref="form" onSubmit={registerUser}>
                         <Row style={{}}>
                             <Col md={{ span: 6, offset: 0 }}>
                                 <TextValidator
