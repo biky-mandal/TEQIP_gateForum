@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect} from 'react';
 import './style.css';
 import { NavLink, Redirect } from 'react-router-dom';
 import { FiChevronLeft } from 'react-icons/fi';
@@ -8,6 +8,8 @@ import { Col, Container, Row } from 'react-bootstrap';
 
 import { LoginAction } from '../../redux/actions/authAction';
 import { useDispatch, useSelector } from 'react-redux';
+import Modal from 'react-modal';
+import firebase from 'firebase'
 
 
 /**
@@ -23,6 +25,10 @@ const LoginPage = (props) => {
     const [userEmail, setUserEmail] = useState('');
     const [userPassword, setUserPassword] = useState('');
 
+    const [modalIsOpen,setModalIsOpen]=useState(false)
+
+    const [email,setEmail]=useState("")
+
     if(auth.authenticate){
         return <Redirect to={'/'}/>
     }
@@ -36,6 +42,23 @@ const LoginPage = (props) => {
         }
         
         dispatch(LoginAction(loginUserDetail));
+    }
+
+    const handleSubmit=async(e)=>{
+        e.preventDefault()
+        const auth=firebase.auth()
+        const config = {
+            url:process.env.REACT_APP_FORGOT_PASSWORD_REDIRECT,
+            handleCodeInApp:true
+        }
+        await auth.sendPasswordResetEmail(email,config)
+        .then(()=>{
+            setEmail("")
+        })
+        .catch((error)=>{
+            console.log(error.message)
+        })
+
     }
 
     return(
@@ -83,7 +106,22 @@ const LoginPage = (props) => {
                         />
                         <Row style={{}}>
                             <Col md={{ span: 12, offset: 0 }}>
-                                <label className="forgot-password-lbl">Forgot Password?</label>
+                                <label className="forgot-password-lbl" onClick={()=>{setModalIsOpen(true)}} >Forgot Password?</label>
+                                <Modal isOpen={modalIsOpen}>
+                                    <div>
+                                        <button onClick={()=>{setModalIsOpen(false)}}>X</button>
+                                    </div>
+                                    <div>
+                                    <form onSubmit={handleSubmit}>
+                                      <input type="email" className="form-control" placeholder="enter your email" value={email}
+                                          onChange={(e)=>{setEmail(e.target.value)}} autoFocus
+                                      />
+                                      <button disabled={!email}>submit</button>
+                                    </form>
+                                      
+                                        
+                                    </div>
+                                </Modal>
                             </Col>
                         </Row>
                             <button type="submit" className="login_btn">Login</button>
