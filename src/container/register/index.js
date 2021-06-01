@@ -6,9 +6,11 @@ import {FaTelegramPlane, FaTwitter, FaInstagram, FaFacebookF} from 'react-icons/
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 import { Col, Container, Row, Form } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
+
 // import Loader from 'react-loader-spinner'
 
 import {RegisterAction} from '../../redux/actions/authAction';
+import firebaseApp from '../../config/fireConfig';
 
 /**
 * @author
@@ -26,24 +28,41 @@ const Registerpage = (props) => {
   const [userBranch, setUserBranch] = useState('');
   const [userCollege, setUserCollege] = useState('');
   const [userPassword, setUserPassword] = useState('');
+  const [branches,setBranches]=useState([]);
+  const [institutes,setInstitutes]=useState([]);
 
-  const Course = [
-    'Select Your Branch',
+ /* const Course = [
+    'Select Your Branch', 
     'Computer Science & Engineering', 
     'Instrumentation Engineering', 
     'Mechanical Engineering', 
     'Civil Engineering',
     'Electrical Engineering'
-]
+]*/
+useEffect(()=>{
+    const db = firebaseApp.firestore();
+    db.collection('branches').onSnapshot(snapshot=>{
+        setBranches(snapshot.docs.map(doc=>doc.data()))
+    })
+},[])
 
-  const Colleges = [
+
+
+  /*const Colleges = [
     'Select Your Institution',
     'Computer Science & Engineering', 
     'Instrumentation Engineering', 
     'Mechanical Engineering', 
     'Civil Engineering',
     'Electrical Engineering'
-]
+]*/
+
+useEffect(()=>{
+    const db = firebaseApp.firestore();
+    db.collection('Institutions').onSnapshot(snapshot=>{
+        setInstitutes(snapshot.docs.map(doc=>doc.data()))
+    })
+},[])
 
     if(auth.authenticate){
         return <Redirect to={'/'} />
@@ -55,7 +74,7 @@ const Registerpage = (props) => {
       const registerUserDetails = {
           userEmail,
           userFullName,
-          userPhone,
+          userPhone, 
           userBranch,
           userCollege,
           userPassword
@@ -152,16 +171,18 @@ const Registerpage = (props) => {
                         <Row style={{}}>
                             <Col md={{ span: 6, offset: 0 }}>
                                 <Form.Group controlId="exampleForm.ControlSelect1">
+                                
                                     <Form.Control 
                                         className="input-field"
                                         as="select"
                                         onChange={(e) => setUserBranch(e.target.value)}
                                     >
-                                    {
-                                        Course.map(c => {
-                                            return <option value={c}>{c}</option>
+                                    {   
+                                        branches.map(c => {
+                                            
+                                            return <option value={c.branchName}>{c.branchName}</option>
                                         })
-                                    }
+                                    } 
                                     </Form.Control>
                                 </Form.Group>
                             </Col>
@@ -173,8 +194,8 @@ const Registerpage = (props) => {
                                         onChange={(e) => setUserCollege(e.target.value)}
                                     >
                                     {
-                                        Colleges.map(c => {
-                                            return <option value={c}>{c}</option>
+                                        institutes.map(c => {
+                                            return <option value={c.name}>{c.name}</option>
                                         })
                                     }
                                     </Form.Control>
